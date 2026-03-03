@@ -1,0 +1,44 @@
+### Variables (edit addresseeId; requester = logged-in user from token)
+@baseUrl = http://localhost:3000/api
+@accessToken = {{login.response.body.accessToken}}
+@addresseeId = 85dbbf51-0069-4a56-93d0-f9950e5d5ef7
+
+### 1. Login (run this first; requester = this user)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test2@example.com",
+  "password": "Password123!"
+}
+
+### 2. Add friend (requester = user from token, body = addresseeId only)
+POST {{baseUrl}}/friend/add
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "addresseeId": "{{addresseeId}}"
+}
+
+### 2b. Add friend – paste token and target user UUID
+POST {{baseUrl}}/friend/add
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "addresseeId": "uuid-of-user-to-add"
+}
+
+
+@friendRequestId = 2e149c97-e12e-41cd-b8a2-8f8569b31059
+### 3. Confirm friend (requester = user from token, body = friendRequestId & status)
+POST {{baseUrl}}/friend/confirm
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "friendRequestId": "{{friendRequestId}}",
+  "status": "accepted"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "fe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "eslint",
+    "docker:build": "docker build --platform linux/arm64 -t chat-fe .",
+    "docker:run": "docker run --env-file .env.example -p 3001:3001 --name chat-container-fe chat-fe:latest"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "axios": "^1.13.5",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "socket.io-client": "^4.8.3",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@redux-devtools/extension": "^3.3.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

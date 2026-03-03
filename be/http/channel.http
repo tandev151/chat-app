@@ -1,0 +1,66 @@
+### Variables
+### Run "Login" first; then use accessToken. Set friendId to a user ID that is already your friend (ACCEPTED).
+@baseUrl = http://localhost:3000/api
+@accessToken = {{login.response.body.accessToken}}
+@friendId = bc9aa392-7151-4671-8b76-e73c24758b5c
+@channelId = {{createDirect.response.body.id}}
+
+### 1. Login (run this first to get accessToken)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "Password123!"
+}
+
+### 2. Create or get direct channel with a friend (body: friendId)
+### Replace friendId above with a user ID that is already your friend.
+# @name createDirect
+POST {{baseUrl}}/channel/direct
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "friendId": "{{friendId}}"
+}
+
+### 3. List my direct channels (paginated)
+GET {{baseUrl}}/channel/direct?limit=20&page=1
+Authorization: Bearer {{accessToken}}
+
+### 4. Get channel by ID (use channelId from step 2, or set @channelId manually)
+GET {{baseUrl}}/channel/{{channelId}}
+Authorization: Bearer {{accessToken}}
+
+### 5. Send a message to the channel
+POST {{baseUrl}}/channel/{{channelId}}/messages
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "I already sent a message to you. Have you received it?"
+}
+
+### 6. Get messages in the channel (paginated)
+GET {{baseUrl}}/channel/{{channelId}}/messages?limit=20&page=1
+Authorization: Bearer {{accessToken}}
+
+### --- Manual override: set channelId and token by hand ---
+# @name getChannel
+# GET {{baseUrl}}/channel/YOUR_CHANNEL_ID_HERE
+# Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+# @name sendMessage
+# POST {{baseUrl}}/channel/YOUR_CHANNEL_ID_HERE/messages
+# Content-Type: application/json
+# Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+#
+# {
+#   "content": "Hello!"
+# }
+
+# @name getMessages
+# GET {{baseUrl}}/channel/YOUR_CHANNEL_ID_HERE/messages?limit=20&page=1
+# Authorization: Bearer YOUR_ACCESS_TOKEN_HERE

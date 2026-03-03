@@ -1,0 +1,17 @@
+/Archive_chat_be.zip
+**/node_modules
+/be.zip
+/fe.zip
+
+**/.env
+
+# Sensitive configuration files
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Sensitive key/certificate material
+**/*.pem
+**/*.key
+**/*.crt

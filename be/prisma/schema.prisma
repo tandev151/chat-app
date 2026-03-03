@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  displayName  String
+  messages     Message[] // 1 user - nhiều message
+  channels     Channel[] @relation("UserChannels") // user tạo ra các channel
+
+
+  // Friendship requests - GỬI ĐI (tôi là người gửi)
+  friendshipRequestsSent     FriendShipRequest[] @relation("FriendshipRequestRequester")
+
+  // Friendship requests - NHẬN ĐƯỢC (tôi là người nhận)
+  friendshipRequestsReceived FriendShipRequest[] @relation("FriendshipRequestAddressee")
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  channelMembers ChannelMember[]
+}
+
+enum ChannelType {
+  DM
+  GROUP
+}
+
+model Channel {
+  id          String      @id @default(uuid())
+  type        ChannelType @default(GROUP)
+  name        String?     // optional for DM channels
+  description String?
+  createdBy   User        @relation("UserChannels", fields: [createdById], references: [id])
+  createdById String
+
+  messages Message[] // 1 channel - nhiều message
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  channelMembers ChannelMember[]
+}
+
+model Message {
+  id      String @id @default(uuid())
+  content String
+
+  channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime @default(now())
+}
+
+model ChannelMember {
+  id String @id @default(uuid())
+
+  channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  joinedAt DateTime @default(now())
+
+  @@unique([channelId, userId]) // 1 user chỉ join 1 lần vào 1 channel
+}
+
+enum FriendshipRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  EXPIRED   // optional
+}
+
+model FriendShipRequest {
+  id String @id @default(uuid())
+
+  requestUserId String
+  addresseeId   String
+
+  requester  User @relation("FriendshipRequestRequester", fields: [requestUserId], references: [id])
+  addressee  User @relation("FriendshipRequestAddressee", fields: [addresseeId], references: [id])
+
+  status     FriendshipRequestStatus @default(PENDING)
+  createdAt  DateTime                @default(now())
+  respondedAt DateTime?
+
+  @@unique([requestUserId, addresseeId])  // 1 cặp (requester, addressee) chỉ 1 request
+}
