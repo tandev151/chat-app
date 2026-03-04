@@ -15,7 +15,7 @@ export const FriendSection = () => {
   return (
     <section aria-label="Friends">
       <h3 className="px-2 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-        Friends
+        Friends 123
       </h3>
       <div className="mt-2 space-y-3">
         <div className="min-h-0 shrink-0">
